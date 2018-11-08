@@ -1,25 +1,46 @@
 import React, { Component } from 'react';
 import './Dashboard.css'
+import Header from '../Header/Header'
+import Search from '../Search/Search';
+import PeopleList from '../PeopleList/PeopleList';
+import Chat from '../Chat/Chat';
+import Send from '../Send/Send';
+import firebase from 'firebase'
 class Dashboard extends Component {
     constructor(props) {
         super(props);
-
-    }
-    async signOut(){
-        await this.props.onLogout()
-        if(await this.props.isAuthenticated === false)
-        {
-            this.props.history.push('/');
+        this.state={
+            uid :'',
         }
     }
+    componentDidMount() {
+        if (localStorage.getItem('login') === 'logout') {
+            this.props.history.push('/');
+        }
+        // const {id} = this.props.match.params;
+        
+        // this.props.displayUser(id);
+    }
+  
+    // componentWillReceiveProps(nextProps) {
+     
+    //     const { id } = nextProps.match.params;
+       
+    //     this.props.displayUser(id);
+    // }
+    
     render() {
+      
         return (
-            <div className="header">
-                <div className="header-right">
-                    <a className="active" href="#home">Home</a>
-                    <a href="#about">About</a>
-                    <a onClick={()=>this.signOut()} >Sign out</a>
+            <div>
+                <Header />
+                <div className="container clearfix">
+                <div className="people-list" id="people-list">
+                    <Search />
+                    <PeopleList />
                 </div>
+                <Chat id={this.props.match.params.id} auth={this.props.auth}  />
+            </div>
             </div>
         );
     }

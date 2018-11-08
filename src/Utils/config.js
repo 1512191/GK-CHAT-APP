@@ -1,4 +1,8 @@
 import * as firebase from 'firebase'
+import {compose,applyMiddleware,createStore } from 'redux'
+import { reactReduxFirebase,getFirebase } from 'react-redux-firebase'
+import thunk from 'redux-thunk'
+import appReducer from './../Reducer/index'
 var config = {
     apiKey: "AIzaSyCHBZxTTkgMkfhxuwNz_2A7k4PzkVaB_pM",
     authDomain: "dagk-cdc42.firebaseapp.com",
@@ -7,36 +11,29 @@ var config = {
     storageBucket: "dagk-cdc42.appspot.com",
     messagingSenderId: "835313726198"
   };
+  const firebaseconfig = {
+    userProfile: 'users', 
+    attachAuthIsReady: true, 
+    firebaseStateName: 'firebase'   
+  }
+  function configureStore (initialState = {}){
   
+  
+    const createStoreWithFirebase =
+        compose(reactReduxFirebase(firebase, firebaseconfig),
+            applyMiddleware(thunk.withExtraArgument(getFirebase))
+        )(createStore)
+  
+    const store = createStoreWithFirebase(appReducer);
+    store.firebaseAuthIsReady.then(() => {
+        console.log('chat') 
+      })
+    return store;
+  }   
+  export default configureStore;
   export const firebaseConnect = firebase.initializeApp(config);
   export const databaseRef = firebase.database().ref();
-// export const todosRef = databaseRef.child("todos");
 export const authRef = firebase.auth();
 export const provider = new firebase.auth.GoogleAuthProvider();
-// firebase.auth().signInWithPopup(provider).then(result => {
-//   // Google Access Token.
-//   const token = result.credential.accessToken;
-//   console.log(token);
-//   // user info.
-//   const user = result.user;
-//   console.log(user);
-//   // ...
-// }).catch(error => {
-//   const errorCode = error.code;
-//   const errorMessage = error.message;
-//   const email = error.email;
-//   // Firebase Auth Credential type
-//   const credential = error.credential;
-//   // ...
-// });
 
-// const user = firebase.auth().currentUser;
  
-// if (user) {
-//     const uid = user.uid;
-//     const name = user.displayName;
-//     const email = user.email;
-//     // ...
-// } else {
-//     // no user...
-// }

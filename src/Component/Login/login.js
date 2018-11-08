@@ -33,9 +33,10 @@ class Login extends Component {
     async login(){
         await this.props.onLogin();
        
-        if( await this.props.isAuthenticated)
+        if(localStorage.getItem('login') == 'login')
         {
-            this.props.history.push('/Dashboard')
+            const id = this.props.auth.uid
+            this.props.history.push(`/Messenger/${id}`)
         }
     }
     render() {

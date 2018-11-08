@@ -5,12 +5,13 @@ import {withRouter} from 'react-router-dom'
 import {firebaseSignIn, firebaseChange} from './../Action/auth'
 class LoginContainer extends Component {
     render() {
-        const {onLogin, loginChange, isAuthenticated}=this.props;
+        const {onLogin, loginChange, isAuthenticated, auth}=this.props;
         return (
             <Login
             onLogin ={onLogin}
                 loginChange = {loginChange}
                 isAuthenticated={isAuthenticated}
+                auth = {auth}
             />
         );
     }
@@ -26,7 +27,8 @@ const mapDispatchToProps = (dispatch) => {
     
 const mapStateToProps = (state) => {
     return {
-        isAuthenticated : state.authReducer.authenticated
+        isAuthenticated : state.authReducer.authenticated,
+        auth:state.firebase.auth
     }
 };
  

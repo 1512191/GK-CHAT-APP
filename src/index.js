@@ -4,20 +4,17 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
-import {createStore, applyMiddleware} from 'redux';
+import firebase from 'firebase'
+import {createStore, applyMiddleware, compose} from 'redux';
 import appReducer from './Reducer/index';
-import thunk from 'redux-thunk'
 
-
+import { reactReduxFirebase, firebaseReducer, getFirebase } from 'react-redux-firebase'
+import configureStore from './Utils/config'
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-
-const store = createStore(
-    appReducer,
-    applyMiddleware(thunk),
-    
-);
+const initialState = window.__INITIAL_STATE__ // set initial state here
+const store = configureStore(initialState)
+// const store = createStoreWithFirebase(appReducer,initialState )
 ReactDOM.render(
     <Provider store = {store}>
         <App />
