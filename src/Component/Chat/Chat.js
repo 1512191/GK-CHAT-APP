@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {firebaseAddMessage, firebaseGetMessage, clearMessage} from '../../Action/chatMessage'
 import {firebaseGetUser} from '../../Action/user'
+import {firebaseSignOut} from '../../Action/auth'
 import firebase from 'firebase'
 import {connect} from 'react-redux'
 import Message from '../Message/Message'
@@ -12,7 +13,9 @@ class Chat extends Component {
         this.state={
             message: '',
             uid :'',
-            idReceiver:''
+            idReceiver:'',
+            image:'',
+            url:''
         }
     }
     
@@ -102,22 +105,12 @@ class Chat extends Component {
             else
             {
                 console.log('Không có ai đăng nhập')
+                this.props.signOut()
+
             }
         })
     }
-    // componentDidUpdate(){
-    //     console.log('did update')
-    //     let idSender = this.state.uid;
-    //     //console.log(firebase.auth().currentUser)
-    //     console.log(idSender)
-    //     let idReceiver = this.state.idReceiver;
-    //     //console.log(this.props.id)
-    //     let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
-    //     //console.log(key)
-    //     this.props.displayUser(idReceiver)
-    //     //console.log(this.props.auth.uid)
-    //     this.props.displayMessage(key);
-    // }
+    
     sendMessage=(e)=>{
         e.preventDefault();
         let timeMessage = firebase.database.ServerValue.TIMESTAMP
@@ -134,14 +127,20 @@ class Chat extends Component {
         this.props.sendFirebase(message, key)
        document.getElementById('reset').reset()
     }
+    onChangeImage = (e) =>{
+        let filename = e.target.files[0].name;
+        this.setState({
+            image:filename
+        })
+        const storage = firebase.storage().ref('images');
+        storage.push()
+        console.log(filename)
+    }
     render() {
         
-        //console.log(key)
-        //console.log(this.props.auth.uid)
-        // this.props.displayMessage(key);
+        
         let {user, messages} = this.props;
-        //console.log(this.state.uid)
-       //console.log(messages)
+       
         let header = user ? (<div className="chat-header clearfix">
         <img src={user.photoURL} width="50px" height="50px"alt="avatar" />
 
@@ -149,12 +148,14 @@ class Chat extends Component {
             <div className="chat-with">Chat with {user.displayName}</div>
             <div className="chat-num-messages">already {messages.length} messages</div>
         </div>
-        <i className="fa fa-star"></i>
+        <div className="rating-star">
+        <i className="fa fa-star check" style={{color:'orange'}}></i>
+        </div>
     </div>) : ''
        //console.log(user)
     //       if(this.state.uid && messages){
         let Mesg = [] ;
-          Mesg = messages.map((mesg, index)=>(mesg.idSender === this.state.uid?<Message key={index} mesg={mesg} index={index}/> : <MessageRe key={index} index={index}mesg={mesg}/>))
+          Mesg = messages.map((mesg, index)=>(mesg.idSender === this.state.uid?<Message key={index} user={user.displayName}mesg={mesg} index={index}/> : <MessageRe key={index} user={user.displayName} index={index}mesg={mesg}/>))
    
         return (
             
@@ -175,7 +176,8 @@ class Chat extends Component {
                     <textarea  name="message" id="message-to-send" onKeyUp={(e) => this.handleKeyUp(e)} onChange={(e)=>this.onChange(e)}placeholder="Type your message" rows="3"></textarea>
 
                     <i className="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
-                        <i className="fa fa-file-image-o"></i>
+                    <label htmlFor="image" ><i className="fa fa-file-image-o"></i></label>
+                        <input id="image" type="file" onChange={(e)=>this.onChangeImage(e)}name="image" />
 
                     <button type="submit" >Send</button>
                     </form>
@@ -190,6 +192,7 @@ const mapDispathToProps = (dispatch)=>{
         displayMessage: (key) => dispatch(firebaseGetMessage(key)),
         displayUser:(uid) => dispatch(firebaseGetUser(uid)),
         clearMessage: ()=>dispatch(clearMessage()),
+        signOut: ()=>dispatch(firebaseSignOut())
     }
 }
 const mapStateToProps = (state)=>{

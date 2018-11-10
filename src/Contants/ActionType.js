@@ -5,5 +5,5 @@ export const LIST_MESSAGES = 'LIST_MESSAGES';
 export const ADD_MESSAGE = 'ADD_MESSAGE';
 export const CHOOSE_USER = 'CHOOSE_USER';
 export const GET_USER = 'GET_USER';
-export const CLEAR_MESSAGE = 'GET_MESSAGE';
-
+export const CLEAR_MESSAGE = 'CLEAR_MESSAGE';
+export const SEARCH_USER = 'SEARCH_USER';

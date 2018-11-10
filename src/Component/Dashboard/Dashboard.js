@@ -17,17 +17,7 @@ class Dashboard extends Component {
         if (localStorage.getItem('login') === 'logout') {
             this.props.history.push('/');
         }
-        // const {id} = this.props.match.params;
-        
-        // this.props.displayUser(id);
     }
-  
-    // componentWillReceiveProps(nextProps) {
-     
-    //     const { id } = nextProps.match.params;
-       
-    //     this.props.displayUser(id);
-    // }
     
     render() {
       

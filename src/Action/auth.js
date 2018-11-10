@@ -19,11 +19,13 @@ export const firebaseSignIn = ()=>{
         return authRef.signInWithPopup(provider).then(result =>{
             const { user: { uid, displayName, photoURL, email } } = result;
             const online = true;
+            const star = false;
             firebase.database().ref(`users/${ uid }`).set({
                 displayName,
                 photoURL,
                 email,
                 online,
+                star,
                 lastTimeLoggedIn: firebase.database.ServerValue.TIMESTAMP
               });
               localStorage.setItem("login", "login")

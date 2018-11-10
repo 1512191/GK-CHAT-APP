@@ -8,23 +8,35 @@ export const getId = (uid)=>{
     }
     
 }
-export const getUser = ({displayName, email, lastTimeLoggedIn, online, photoURL}) => {
+export const getUser = ({displayName, email, lastTimeLoggedIn, online, photoURL, star}) => {
     return{
         type:types.GET_USER,
         displayName,
         email,
         lastTimeLoggedIn,
-        photoURL
+        photoURL,
+        star
     }
 }
+// export const clearUser = ()=>{
+//     return{
+//         type: 
+//     }
+// }
 export const firebaseGetUser = (uid) =>{
     return (dispatch) =>{
         const users = firebase.database().ref('users');
         users.child(uid).on('value', snapshot=>{
-            const {displayName, email, lastTimeLoggedIn, online, photoURL} = snapshot.val();
+            const {displayName, email, lastTimeLoggedIn, online, photoURL, star} = snapshot.val();
            
-            dispatch(getUser({displayName, email, lastTimeLoggedIn, online, photoURL}))
+            dispatch(getUser({displayName, email, lastTimeLoggedIn, online, photoURL, star}))
         })
+    }
+} 
+export const searchUser= (keyword)=>{
+    return {
+        type : types.SEARCH_USER,
+        keyword
     }
 }
 

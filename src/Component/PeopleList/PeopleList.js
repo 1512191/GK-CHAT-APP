@@ -30,13 +30,21 @@ class PeopleList extends Component {
         }, []);
       }
     render() {
-        const {users} = this.props;
-
+        let {users, search} = this.props;
+       let list = []
+       list = this.showUsersList(users)
+        //console.log(list)
+        if(users && search){
+            list = list.filter((user)=>{
+                return user.displayName.toLowerCase().indexOf(search.toLowerCase()) !== -1
+            })
+        }
+        
         return (
            
             
          <ul>
-            { this.showUsersList(users).map((user, key) => 
+            { list.map((user, key) => 
            
             <li key={key} className="clearfix" onClick={() =>this.chatMess(user.uid)}>
                 <img src={user. photoURL} alt="avatar" width="20px" height="20px"/>
@@ -64,7 +72,8 @@ const mapDispatchToProps = dispatch => {
   };
   const mapStateToProps = (state)=>{
       return{
-          users:state.listReducer
+          users:state.listReducer,
+          search : state.search
       }
   }
 export default withRouter(connect(mapStateToProps,mapDispatchToProps) (PeopleList));
