@@ -15,7 +15,8 @@ class Message extends Component {
 // }
     render() {
         const {mesg, index} = this.props;
-       
+        
+       let displayText = mesg.typeMes == 'image'? <img src={mesg.text} width='80px' height='80px'/> : <div>{mesg.text}</div>
         return (
             <div>
                 <li key={index} className="clearfix">
@@ -26,7 +27,7 @@ class Message extends Component {
                     
                                                 </div>
                                                 <div className="message other-message float-right">
-                                                   {mesg.text}
+                                                   {displayText}
                                                     </div>
                                     </li>
             </div>

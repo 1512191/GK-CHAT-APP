@@ -1,25 +1,27 @@
 import React, { Component } from 'react';
-import {firebaseAddMessage, firebaseGetMessage, clearMessage} from '../../Action/chatMessage'
-import {firebaseGetUser} from '../../Action/user'
-import {firebaseSignOut} from '../../Action/auth'
-import firebase from 'firebase'
-import {connect} from 'react-redux'
+import { firebaseAddMessage, firebaseGetMessage, clearMessage } from '../../Action/chatMessage'
+import { firebaseGetUser } from '../../Action/user'
+import { firebaseSignOut } from '../../Action/auth'
+import firebase, { storage } from 'firebase'
+import { connect } from 'react-redux'
 import Message from '../Message/Message'
 import MessageRe from '../MessageRe/MessageRe';
-import {withRouter} from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 class Chat extends Component {
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             message: '',
-            uid :'',
-            idReceiver:'',
-            image:'',
-            url:''
+            uid: '',
+            idReceiver: '',
+            image: '',
+            url: '',
+            typeMes: ''
         }
+
     }
-    
-    componentDidMount(){
+
+    componentDidMount() {
         let idSender = this.state.uid;
         //console.log(firebase.auth().currentUser)
         //console.log(idSender)
@@ -32,12 +34,11 @@ class Chat extends Component {
         //console.log(this.props.auth.uid)
         this.props.displayMessage(key);
     }
-    handleKeyUp = (e)=>{
+    handleKeyUp = (e) => {
         //e.preventDefault();
-        if (e.keyCode === 13)
-        {
+        if (e.keyCode === 13) {
             this.sendMessage(e);
-            
+
         }
     }
     onChange = (e) => {
@@ -46,163 +47,182 @@ class Chat extends Component {
         const value = e.target.value;
         this.setState({
             [name]: value,
+            typeMes: 'text'
         })
 
     }
-    
-    componentWillUnmount(){
+
+    componentWillUnmount() {
         console.log('unmout')
         let idSender = this.state.uid;
-        let {idReceiver} = this.props.id;
+        let { idReceiver } = this.props.id;
         let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
         firebase.database().ref('messages').child(key).off()
     }
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         //console.log(nextProps.match.params.id)
         let id = nextProps.match.params.id
         this.setState({
-            idReceiver:nextProps.match.params.id
+            idReceiver: nextProps.match.params.id
         })
-        if(id !== this.props.match.params.id){
+        if (id !== this.props.match.params.id) {
             this.props.clearMessage();
             let idSender = this.state.uid;
-        //console.log(firebase.auth().currentUser)
-        //console.log(idSender)
-        let idReceiver = nextProps.match.params.id;
-        //console.log(this.props.id)
-        let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
-        //console.log(key)
-        this.props.displayUser(idReceiver)
-        //console.log(this.props.auth.uid)
-        this.props.displayMessage(key);
+            //console.log(firebase.auth().currentUser)
+            //console.log(idSender)
+            let idReceiver = nextProps.match.params.id;
+            //console.log(this.props.id)
+            let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
+            //console.log(key)
+            this.props.displayUser(idReceiver)
+            //console.log(this.props.auth.uid)
+            this.props.displayMessage(key);
         }
     }
-    handleAuth=(result)=>{
+    handleAuth = (result) => {
         this.setState({
-            uid : result.uid
+            uid: result.uid
         })
     }
-    componentWillMount(){
-        firebase.auth().onAuthStateChanged(user=>{
-            if(user)
-            {
+    componentWillMount() {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
                 let idSender = user.uid;
                 //console.log(firebase.auth().currentUser)
-                
+
                 let idReceiver = this.props.match.params.id;
                 this.setState({
-                    uid : idSender,
-                    idReceiver : this.props.match.params.id,
+                    uid: idSender,
+                    idReceiver: this.props.match.params.id,
                 })
                 //console.log(this.props.id)
                 let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
                 //console.log(key)
-               // this.props.displayUser(idReceiver)
+                // this.props.displayUser(idReceiver)
                 //console.log(this.props.auth.uid)
                 this.props.clearMessage();
                 this.props.displayMessage(key);
             }
-            else
-            {
+            else {
                 console.log('Không có ai đăng nhập')
                 this.props.signOut()
 
             }
         })
     }
-    
-    sendMessage=(e)=>{
+
+    sendMessage = (e) => {
         e.preventDefault();
         let timeMessage = firebase.database.ServerValue.TIMESTAMP
         let message = {
-            idSender : this.props.auth.uid,
-            idReceiver : this.props.id,
+            idSender: this.props.auth.uid,
+            idReceiver: this.props.id,
             timeMessage,
-            text : this.state.message
+            text: this.state.message,
+            typeMes: this.state.typeMes,
         }
         let idSender = this.props.auth.uid;
         let idReceiver = this.props.id;
         let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
-        
+
         this.props.sendFirebase(message, key)
-       document.getElementById('reset').reset()
+        document.getElementById('reset').reset()
     }
-    onChangeImage = (e) =>{
-        let filename = e.target.files[0].name;
-        this.setState({
-            image:filename
+    onChangeImage = async (e) => {
+        e.preventDefault()
+        if (e.target.files[0]) {
+            let filename = e.target.files[0];
+            await this.setState(() => ({ image: filename, typeMes: 'image' }))
+        }
+        let uploadFile = firebase.storage().ref(`images/${this.state.image.name}`)
+        uploadFile.put(this.state.image).then(result => {
+            uploadFile.getDownloadURL().then(url => {
+                let timeMessage = firebase.database.ServerValue.TIMESTAMP
+                let message = {
+                    idSender: this.props.auth.uid,
+                    idReceiver: this.props.id,
+                    timeMessage,
+                    text: url,
+                    typeMes: this.state.typeMes,
+                }
+                let idSender = this.props.auth.uid;
+                let idReceiver = this.props.id;
+                let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
+
+                this.props.sendFirebase(message, key)
+            }
+
+            )
         })
-        const storage = firebase.storage().ref('images');
-        storage.push()
-        console.log(filename)
+
     }
     render() {
-        
-        
-        let {user, messages} = this.props;
-       
-        let header = user ? (<div className="chat-header clearfix">
-        <img src={user.photoURL} width="50px" height="50px"alt="avatar" />
 
-        <div className="chat-about">
-            <div className="chat-with">Chat with {user.displayName}</div>
-            <div className="chat-num-messages">already {messages.length} messages</div>
-        </div>
-        <div className="rating-star">
-        <i className="fa fa-star check" style={{color:'orange'}}></i>
-        </div>
-    </div>) : ''
-       //console.log(user)
-    //       if(this.state.uid && messages){
-        let Mesg = [] ;
-          Mesg = messages.map((mesg, index)=>(mesg.idSender === this.state.uid?<Message key={index} user={user.displayName}mesg={mesg} index={index}/> : <MessageRe key={index} user={user.displayName} index={index}mesg={mesg}/>))
-   
+
+        let { user, messages } = this.props;
+
+        let header = user ? (<div className="chat-header clearfix">
+            <img src={user.photoURL} width="50px" height="50px" alt="avatar" />
+
+            <div className="chat-about">
+                <div className="chat-with">Chat with {user.displayName}</div>
+                <div className="chat-num-messages">already {messages.length} messages</div>
+            </div>
+            <div className="rating-star">
+                <i className="fa fa-star check" style={{ color: 'orange' }}></i>
+            </div>
+        </div>) : ''
+        //console.log(user)
+        //       if(this.state.uid && messages){
+        let Mesg = [];
+        Mesg = messages.map((mesg, index) => (mesg.idSender === this.state.uid ? <Message key={index} user={user.displayName} mesg={mesg} index={index} /> : <MessageRe key={index} user={user.displayName} index={index} mesg={mesg} />))
+
         return (
-            
+
             <div className="chat">
-           
+
                 {header}
                 <div className="chat-history">
                     <ul>
                         {
-                             Mesg
+                            Mesg
                         }
-                   
+
                     </ul>
 
                 </div>
                 <div className="chat-message clearfix">
-                <form id="reset" onSubmit={(e)=>this.sendMessage(e)}>
-                    <textarea  name="message" id="message-to-send" onKeyUp={(e) => this.handleKeyUp(e)} onChange={(e)=>this.onChange(e)}placeholder="Type your message" rows="3"></textarea>
+                    <form id="reset" onSubmit={(e) => this.sendMessage(e)}>
+                        <textarea name="message" id="message-to-send" onKeyUp={(e) => this.handleKeyUp(e)} onChange={(e) => this.onChange(e)} placeholder="Type your message" rows="3"></textarea>
 
-                    <i className="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
+                        <i className="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
                     <label htmlFor="image" ><i className="fa fa-file-image-o"></i></label>
-                        <input id="image" type="file" onChange={(e)=>this.onChangeImage(e)}name="image" />
+                        <input id="image" type="file" onChange={(e) => this.onChangeImage(e)} name="image" />
 
-                    <button type="submit" >Send</button>
+                        <button type="submit" >Send</button>
                     </form>
                 </div>
             </div>
         );
     }
 }
-const mapDispathToProps = (dispatch)=>{
+const mapDispathToProps = (dispatch) => {
     return {
-        sendFirebase: (inforMess, key)=> dispatch(firebaseAddMessage(inforMess, key)),
+        sendFirebase: (inforMess, key) => dispatch(firebaseAddMessage(inforMess, key)),
         displayMessage: (key) => dispatch(firebaseGetMessage(key)),
-        displayUser:(uid) => dispatch(firebaseGetUser(uid)),
-        clearMessage: ()=>dispatch(clearMessage()),
-        signOut: ()=>dispatch(firebaseSignOut())
+        displayUser: (uid) => dispatch(firebaseGetUser(uid)),
+        clearMessage: () => dispatch(clearMessage()),
+        signOut: () => dispatch(firebaseSignOut())
     }
 }
-const mapStateToProps = (state)=>{
+const mapStateToProps = (state) => {
     // console.log(state.firebase.auth)
     return {
         //uid : state.authReducer.infor.uid,
         //idReceiver:state.chooseReducer.uid,
-        user : state.chooseReducer,
-        messages : state.listChatReducer,
-        auth : state.firebase.auth,
+        user: state.chooseReducer,
+        messages: state.listChatReducer,
+        auth: state.firebase.auth,
     }
 }
-export default withRouter(connect(mapStateToProps,mapDispathToProps) (Chat));
+export default withRouter(connect(mapStateToProps, mapDispathToProps)(Chat));

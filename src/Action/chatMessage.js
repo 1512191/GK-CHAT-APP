@@ -1,12 +1,13 @@
 import * as types from './../Contants/ActionType'
 import {firebaseConnect, authRef,  provider} from './../Utils/config'
 import firebase from 'firebase'
-export const getListMessages = ({idReceiver, idSender, text, timeMessage})=>{
+export const getListMessages = ({idReceiver, idSender, text, timeMessage, typeMes})=>{
     return{
         type:types.LIST_MESSAGES,
         idReceiver,
         idSender,
         text,
+        typeMes,
         timeMessage
     }
     
@@ -27,8 +28,8 @@ export const firebaseGetMessage = (key)=>{
     return (dispatch) =>{
         const message = firebase.database().ref('messages');
         message.child(key).on('child_added', snapshot=>{
-            let {idReceiver, idSender, text, timeMessage} = snapshot.val();
-            dispatch(getListMessages({idReceiver, idSender, text, timeMessage}))
+            let {idReceiver, idSender, text, timeMessage, typeMes} = snapshot.val();
+            dispatch(getListMessages({idReceiver, idSender, text, timeMessage, typeMes}))
         })
        
     }

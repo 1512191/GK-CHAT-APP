@@ -16,7 +16,7 @@ class MessageRe extends Component {
 // }
     render() {
         const {mesg, index} = this.props
-        
+        let displayText = mesg.typeMes == 'image'? <img src={mesg.text} width='80px' height='80px'/> : <div>{mesg.text}</div>
         return (
             
                 <li key={index}>
@@ -25,7 +25,7 @@ class MessageRe extends Component {
                                                     <span className="message-data-time">{moment(Date(mesg.timeMessage)).calendar()}</span>
                                                 </div>
                                                 <div className="message my-message">
-                                                   {mesg.text}
+                                                   {displayText}
                                                     </div>
                                             </li>
             

@@ -3,13 +3,14 @@ const initialState = [];
 const listChatReducer = (state = initialState, action)=>{
     switch (action.type){
         case types.LIST_MESSAGES:
-        const {idReceiver, idSender, text, timeMessage} = action;
+        const {idReceiver, idSender, text, timeMessage, typeMes} = action;
         //console.log(action.text)
         return  state.concat([
           {
             idReceiver,
             idSender,
             text,
+            typeMes,
             timeMessage
           }
         ])
