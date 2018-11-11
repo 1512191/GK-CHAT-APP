@@ -15,8 +15,25 @@ class MessageRe extends Component {
 
 // }
     render() {
-        const {mesg, index} = this.props
-        let displayText = mesg.typeMes == 'image'? <img src={mesg.text} width='80px' height='80px'/> : <div>{mesg.text}</div>
+        const {mesg, index} = this.props;
+        let displayMessage = '';
+        if(mesg.typeMes == 'text')
+        {
+            let link = mesg.text.match(/((http|ftp|https):\/\/)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+            if(link){
+                let imgLink = mesg.text.match(/\.(gif|jpg|jpeg|tiff|png)/g);
+                if(imgLink){
+                    displayMessage = <img src={mesg.text} width='80px' height='80px'/>
+                }else{
+                    displayMessage = <a href={mesg.text}>{mesg.text}</a>
+                }
+            }else{
+                displayMessage = <div>{mesg.text}</div>
+            }
+        }else{
+            displayMessage = <img src={mesg.text} width='80px' height='80px'/>
+        }
+        //let displayText = mesg.typeMes == 'image'? <img src={mesg.text} width='80px' height='80px'/> : <div>{mesg.text}</div>
         return (
             
                 <li key={index}>
@@ -25,7 +42,7 @@ class MessageRe extends Component {
                                                     <span className="message-data-time">{moment(Date(mesg.timeMessage)).calendar()}</span>
                                                 </div>
                                                 <div className="message my-message">
-                                                   {displayText}
+                                                   {displayMessage}
                                                     </div>
                                             </li>
             
