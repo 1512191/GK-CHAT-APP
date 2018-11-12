@@ -4,21 +4,12 @@ import { connect } from "react-redux";
 import {withRouter} from 'react-router-dom'
 import './Header.css'
 class Header extends Component {
-    constructor(props) {
-        super(props);
-
-    }
     signOut = ()=>{
         this.props.onLogout()
         this.props.history.push('/');
-        // console.log(this.props.auth)
-        // if(await this.props.auth === false)
-        // {
-        //     
-        // }
     }
     render() {
-        const { auth } = this.props;
+        
       
        
       
@@ -27,8 +18,8 @@ class Header extends Component {
             <div className="header">
                 <div style={{color : 'rgb(117, 185, 89)', textAlign:"center", fontSize:'30px'}}>CHAT APP </div>
                 <div className="header-right">
-                    <a className="active" href="#home">Home</a>
-                    <a onClick={() => this.signOut()} >Sign out</a>
+                    <a className="active" href="">Home</a>
+                    <a onClick={() => this.signOut()} href="">Sign out</a>
                 </div>
             </div>
             

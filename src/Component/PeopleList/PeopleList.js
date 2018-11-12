@@ -47,7 +47,7 @@ class PeopleList extends Component {
             { list.map((user, key) => 
            
             <li key={key} className="clearfix" onClick={() =>this.chatMess(user.uid)}>
-                <img src={user. photoURL} alt="avatar" width="20px" height="20px"/>
+                <img src={user.photoURL} alt="avatar" width="20px" height="20px"/>
                 <div className="about">
                     <div className="name">{user.displayName}</div>
                     <div className="status">

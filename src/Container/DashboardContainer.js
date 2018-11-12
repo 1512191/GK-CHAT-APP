@@ -4,9 +4,6 @@ import { connect } from "react-redux";
 import {withRouter} from 'react-router-dom'
 import {firebaseSignOut} from './../Action/auth'
 import {firebaseGetUser} from './../Action/user'
-import { withFirebase } from 'react-redux-firebase';
-import {firebaseGetMessage} from './../Action/chatMessage'
-import {compsose} from 'redux'
 class DashboardContainer extends Component {
     render() {
         const {onLogout, isAuthenticated, auth, display}=this.props;

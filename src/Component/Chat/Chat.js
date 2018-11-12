@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { firebaseAddMessage, firebaseGetMessage, clearMessage } from '../../Action/chatMessage'
 import { firebaseGetUser } from '../../Action/user'
 import { firebaseSignOut } from '../../Action/auth'
-import firebase, { storage } from 'firebase'
+import firebase from 'firebase'
 import { connect } from 'react-redux'
 import Message from '../Message/Message'
 import MessageRe from '../MessageRe/MessageRe';
@@ -63,8 +63,10 @@ class Chat extends Component {
         //console.log('wilre')
         //console.log(nextProps.match.params.id)
         let id = nextProps.match.params.id
+        let star = this.props.getStar(this.props.id, this.props.auth.uid)
         this.setState({
-            idReceiver: nextProps.match.params.id
+            idReceiver: nextProps.match.params.id,
+            star : star
         })
         if (id !== this.props.match.params.id) {
             this.props.clearMessage();
@@ -74,7 +76,7 @@ class Chat extends Component {
             let idReceiver = nextProps.match.params.id;
             //console.log(this.props.id)
             let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
-            this.props.getStar(idReceiver, idSender)
+           
             //console.log(key)
             this.props.displayUser(idReceiver)
             //console.log(this.props.auth.uid)
@@ -87,7 +89,7 @@ class Chat extends Component {
         })
     }
     componentWillMount() {
-        console.log('willmount')
+        //console.log('willmount')
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 let idSender = user.uid;
@@ -171,18 +173,18 @@ class Chat extends Component {
             let idReceiver = this.props.id;
             let idSender = this.props.auth.uid
             this.props.addStar(star, idReceiver, idSender)
-            this.props.getStar(this.props.id, this.props.auth.uid)
+           
         }
     }
     render() {
 
         //console.log('render')
         let { user, messages } = this.props;
-        let star = this.props.getStar(this.props.id, this.props.auth.uid)
+        //let star = this.props.getStar(this.props.id, this.props.auth.uid)
         let displayStar = 'unchecked'
-       // console.log(this.state.star)
-        if(star){
-            if(star.star === true){
+        console.log(this.props.star)
+        if(this.props.star){
+            if(this.props.star === true){
                 displayStar = 'checked'
             }
         }

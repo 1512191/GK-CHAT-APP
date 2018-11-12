@@ -4,11 +4,6 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
-import firebase from 'firebase'
-import {createStore, applyMiddleware, compose} from 'redux';
-import appReducer from './Reducer/index';
-
-import { reactReduxFirebase, firebaseReducer, getFirebase } from 'react-redux-firebase'
 import configureStore from './Utils/config'
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

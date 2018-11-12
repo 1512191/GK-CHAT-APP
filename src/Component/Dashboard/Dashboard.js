@@ -4,8 +4,6 @@ import Header from '../Header/Header'
 import Search from '../Search/Search';
 import PeopleList from '../PeopleList/PeopleList';
 import Chat from '../Chat/Chat';
-import Send from '../Send/Send';
-import firebase from 'firebase'
 class Dashboard extends Component {
     constructor(props) {
         super(props);

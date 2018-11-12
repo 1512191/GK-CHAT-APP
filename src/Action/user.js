@@ -1,5 +1,4 @@
 import * as types from './../Contants/ActionType'
-import {firebaseConnect, authRef,  provider} from './../Utils/config'
 import firebase from 'firebase'
 export const getId = (uid)=>{
     return{

@@ -1,5 +1,5 @@
 import * as types from './../Contants/ActionType'
-import {firebaseConnect, authRef,  provider} from './../Utils/config'
+import {authRef,  provider} from './../Utils/config'
 import firebase from 'firebase'
 export const signIn = (infor)=>{
     

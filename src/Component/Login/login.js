@@ -1,39 +1,13 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
 class Login extends Component {
       constructor(props, context) {
         super(props);
      }
-    // componentWillUpdate(nextProps) {
-    //     //this.props.loginChange();
-    //     console.log(nextProps.isAuthenticated)
-    //     if (nextProps.isAuthenticated) {
-    //       this.props.history.push("/Dashboard");
-    //     }
-    //   }
-    // //   componentWillMount(){
-
-    // //   }
-    //   componentDidMount(){
-    //     //  if(this.props.isAuthenticated){
-    //     //     this.props.history.push("/Dashboard");
-    //     //  }
-    //     console.log(this.props.isAuthenticated)
-    //   }
-    // login = ()=>{
-    // //    console.log(this.props.login())
-    // //    }
-    //     this.props.login();
-    //     if(this.props.isAuthenticated)
-    //     {
-    //         this.props.history.push('/Dashboard')
-    //     }
-    // }
+    
     async login(){
         await this.props.onLogin();
        
-        if(localStorage.getItem('login') == 'login')
+        if(localStorage.getItem('login') === 'login')
         {
             const id = this.props.auth.uid
             this.props.history.push(`/Messenger/${id}`)

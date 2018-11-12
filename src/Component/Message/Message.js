@@ -1,28 +1,16 @@
 import React, { Component } from 'react';
-import {firebaseGetUser} from '../../Action/user'
-import {connect} from 'react-redux'
 import moment from 'moment' 
 class Message extends Component {
-    constructor(props) {
-        super(props);
-        
-    }
-    
-// componentDidMount()
-// {
-//     this.props.displayUser(this.props.mesg.idSender);
-
-// }
     render() {
         const {mesg, index} = this.props;
         let displayMessage = '';
-        if(mesg.typeMes == 'text')
+        if(mesg.typeMes === 'text')
         {
-            let link = mesg.text.match(/((http|ftp|https):\/\/)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+            let link = mesg.text.match(/((http|ftp|https):\/\/)?[-a-zA-Z0-9@:%._~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_.~#?&//=]*)/g);
             if(link){
                 let imgLink = mesg.text.match(/\.(gif|jpg|jpeg|tiff|png)/g);
                 if(imgLink){
-                    displayMessage = <img src={mesg.text} width='80px' height='80px'/>
+                    displayMessage = <img src={mesg.text} width='80px' height='80px'alt="Hình không có"/>
                 }else{
                     displayMessage = <a href={mesg.text}>{mesg.text}</a>
                 }
@@ -30,7 +18,7 @@ class Message extends Component {
                 displayMessage = <div>{mesg.text}</div>
             }
         }else{
-            displayMessage = <img src={mesg.text} width='80px' height='80px'/>
+            displayMessage = <img src={mesg.text} width='80px' height='80px'alt="Hình không có"/>
         }
     
     
@@ -52,14 +40,4 @@ class Message extends Component {
         );
     }
 }
-// const mapDispathToProps = (dispatch)=>{
-//     return {
-//         displayUser: (id) => dispatch(firebaseGetUser(id))
-//     }
-// }
-// const mapStateToProps = (state)=>{
-//     return {
-//         user: state.chooseReducer
-//     }
-// }
 export default Message;
