@@ -25,9 +25,9 @@ class Header extends Component {
         return (
        
             <div className="header">
+                <div style={{color : 'rgb(117, 185, 89)', textAlign:"center", fontSize:'30px'}}>CHAT APP </div>
                 <div className="header-right">
                     <a className="active" href="#home">Home</a>
-                    <a href="#about">About</a>
                     <a onClick={() => this.signOut()} >Sign out</a>
                 </div>
             </div>

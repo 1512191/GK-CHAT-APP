@@ -6,7 +6,8 @@ import firebase, { storage } from 'firebase'
 import { connect } from 'react-redux'
 import Message from '../Message/Message'
 import MessageRe from '../MessageRe/MessageRe';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
+import {firebaseAddStar, toggleStar, firebaseGetStar} from '../../Action/toogle_star'
 class Chat extends Component {
     constructor(props) {
         super(props);
@@ -16,22 +17,21 @@ class Chat extends Component {
             idReceiver: '',
             image: '',
             url: '',
-            typeMes: ''
+            typeMes: '', 
+            star: {}
         }
 
     }
 
     componentDidMount() {
+        //console.log('didmount')
         let idSender = this.state.uid;
-        //console.log(firebase.auth().currentUser)
-        //console.log(idSender)
         let idReceiver = this.props.match.params.id;
-        //console.log(this.props.id)
         let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
         this.props.clearMessage();
-        //console.log(key)
+        //console.log(this.state.uid);
+        //console.log(idReceiver)
         this.props.displayUser(idReceiver)
-        //console.log(this.props.auth.uid)
         this.props.displayMessage(key);
     }
     handleKeyUp = (e) => {
@@ -53,13 +53,14 @@ class Chat extends Component {
     }
 
     componentWillUnmount() {
-        console.log('unmout')
+        //console.log('unmout')
         let idSender = this.state.uid;
         let { idReceiver } = this.props.id;
         let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
         firebase.database().ref('messages').child(key).off()
     }
     componentWillReceiveProps(nextProps) {
+        //console.log('wilre')
         //console.log(nextProps.match.params.id)
         let id = nextProps.match.params.id
         this.setState({
@@ -73,6 +74,7 @@ class Chat extends Component {
             let idReceiver = nextProps.match.params.id;
             //console.log(this.props.id)
             let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
+            this.props.getStar(idReceiver, idSender)
             //console.log(key)
             this.props.displayUser(idReceiver)
             //console.log(this.props.auth.uid)
@@ -85,6 +87,7 @@ class Chat extends Component {
         })
     }
     componentWillMount() {
+        console.log('willmount')
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 let idSender = user.uid;
@@ -94,12 +97,15 @@ class Chat extends Component {
                 this.setState({
                     uid: idSender,
                     idReceiver: this.props.match.params.id,
+                    //star : this.props.getStar(idReceiver, idSender)
                 })
                 //console.log(this.props.id)
                 let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
                 //console.log(key)
                 // this.props.displayUser(idReceiver)
                 //console.log(this.props.auth.uid)
+                //console.log(this.props.getStar(idReceiver, idSender))
+                
                 this.props.clearMessage();
                 this.props.displayMessage(key);
             }
@@ -156,11 +162,31 @@ class Chat extends Component {
         })
 
     }
+    toggleStar = async ()=>{
+        await this.props.toggleStar();
+        if(await this.props.star !== null){
+            let star = {
+                star : this.props.star
+            }
+            let idReceiver = this.props.id;
+            let idSender = this.props.auth.uid
+            this.props.addStar(star, idReceiver, idSender)
+            this.props.getStar(this.props.id, this.props.auth.uid)
+        }
+    }
     render() {
 
-
+        //console.log('render')
         let { user, messages } = this.props;
-
+        let star = this.props.getStar(this.props.id, this.props.auth.uid)
+        let displayStar = 'unchecked'
+       // console.log(this.state.star)
+        if(star){
+            if(star.star === true){
+                displayStar = 'checked'
+            }
+        }
+        
         let header = user ? (<div className="chat-header clearfix">
             <img src={user.photoURL} width="50px" height="50px" alt="avatar" />
 
@@ -168,8 +194,8 @@ class Chat extends Component {
                 <div className="chat-with">Chat with {user.displayName}</div>
                 <div className="chat-num-messages">already {messages.length} messages</div>
             </div>
-            <div className="rating-star">
-                <i className="fa fa-star check" style={{ color: 'orange' }}></i>
+            <div className="rating-star" onClick={()=>this.toggleStar()}>
+                <i className="fa fa-star" id={displayStar}></i>
             </div>
         </div>) : ''
         //console.log(user)
@@ -212,7 +238,10 @@ const mapDispathToProps = (dispatch) => {
         displayMessage: (key) => dispatch(firebaseGetMessage(key)),
         displayUser: (uid) => dispatch(firebaseGetUser(uid)),
         clearMessage: () => dispatch(clearMessage()),
-        signOut: () => dispatch(firebaseSignOut())
+        signOut: () => dispatch(firebaseSignOut()),
+        toggleStar: ()=>dispatch(toggleStar()),
+        addStar:(star, key, uid)=>dispatch(firebaseAddStar(star, key, uid)),
+        getStar:(key, uid)=>dispatch(firebaseGetStar(key, uid))
     }
 }
 const mapStateToProps = (state) => {
@@ -223,6 +252,7 @@ const mapStateToProps = (state) => {
         user: state.chooseReducer,
         messages: state.listChatReducer,
         auth: state.firebase.auth,
+        star : state.starReducer
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispathToProps)(Chat));

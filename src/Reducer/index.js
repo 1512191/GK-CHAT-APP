@@ -5,6 +5,7 @@ import listChatReducer from './list_chat'
 import { combineReducers } from 'redux';
 import {firebaseReducer} from 'react-redux-firebase';
 import searchReducer from './Search'
+import starReducer from './star';
 const appReducer = combineReducers({
     authReducer,
     listReducer,
@@ -12,5 +13,6 @@ const appReducer = combineReducers({
     listChatReducer,
     firebase : firebaseReducer,
     search : searchReducer,
+    starReducer,
 })
 export default appReducer;

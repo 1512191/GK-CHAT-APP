@@ -14,26 +14,33 @@ input[type=file]{
 *, *:before, *:after {
   box-sizing: border-box;
 }
-.checked {
+
+
+#checked{
   color: orange;
 }
-/* body {
+#unchecked{
+  color: #D8DADF;
+}
+body {
   background: #C5DDEB;
   font: 14px/20px "Lato", Arial, sans-serif;
   padding: 40px 0;
   color: white;
-}*/
+  
+}
 
-/* .container {
+#container {
   margin: 0 auto;
   width: 750px;
   background: #444753;
   border-radius: 5px;
-}  */
+}  
 
 .people-list {
   width:260px;
   float: left;
+  
 }
 .people-list .search {
     padding: 20px;

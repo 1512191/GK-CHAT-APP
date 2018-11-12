@@ -7,3 +7,5 @@ export const CHOOSE_USER = 'CHOOSE_USER';
 export const GET_USER = 'GET_USER';
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE';
 export const SEARCH_USER = 'SEARCH_USER';
+export const TOOGLE_STAR = 'TOOGLE_STAR';
+export const GET_STAR = 'GET_STAR';

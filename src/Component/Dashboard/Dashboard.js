@@ -24,7 +24,7 @@ class Dashboard extends Component {
         return (
             <div>
                 <Header />
-                <div className="container clearfix">
+                <div className="clearfix" id ="container">
                 <div className="people-list" id="people-list">
                     <Search />
                     <PeopleList />
