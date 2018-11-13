@@ -22,10 +22,8 @@ export const firebaseGetStar = (key, uid)=>{
     return (dispatch)=>{
         const starRef = firebase.database().ref(`stars/${uid}`);
         starRef.child(key).on('value', snapshot=>{
-            star = snapshot.val()
-            //console.log(star)
+          dispatch(getStar(snapshot.val()))
         })
-        return star;
     }
 }
 

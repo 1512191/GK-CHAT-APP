@@ -6,6 +6,7 @@ import { combineReducers } from 'redux';
 import {firebaseReducer} from 'react-redux-firebase';
 import searchReducer from './Search'
 import starReducer from './star';
+import getStarReducer from './get_star';
 const appReducer = combineReducers({
     authReducer,
     listReducer,
@@ -14,5 +15,7 @@ const appReducer = combineReducers({
     firebase : firebaseReducer,
     search : searchReducer,
     starReducer,
+    getStarReducer,
+
 })
 export default appReducer;

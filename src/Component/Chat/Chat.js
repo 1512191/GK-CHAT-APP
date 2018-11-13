@@ -63,10 +63,10 @@ class Chat extends Component {
         //console.log('wilre')
         //console.log(nextProps.match.params.id)
         let id = nextProps.match.params.id
-        let star = this.props.getStar(this.props.id, this.props.auth.uid)
+        //let star = this.props.getStar(this.props.id, this.props.auth.uid)
         this.setState({
             idReceiver: nextProps.match.params.id,
-            star : star
+            //star : star
         })
         if (id !== this.props.match.params.id) {
             this.props.clearMessage();
@@ -76,7 +76,7 @@ class Chat extends Component {
             let idReceiver = nextProps.match.params.id;
             //console.log(this.props.id)
             let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
-           
+            this.props.getStar(idReceiver, idSender)
             //console.log(key)
             this.props.displayUser(idReceiver)
             //console.log(this.props.auth.uid)
@@ -109,6 +109,7 @@ class Chat extends Component {
                 //console.log(this.props.getStar(idReceiver, idSender))
                 
                 this.props.clearMessage();
+                this.props.getStar(idReceiver, idSender)
                 this.props.displayMessage(key);
             }
             else {
@@ -179,12 +180,12 @@ class Chat extends Component {
     render() {
 
         //console.log('render')
-        let { user, messages } = this.props;
+        let { user, messages, getStarUser } = this.props;
         //let star = this.props.getStar(this.props.id, this.props.auth.uid)
         let displayStar = 'unchecked'
         console.log(this.props.star)
-        if(this.props.star){
-            if(this.props.star === true){
+        if(getStarUser){
+            if(getStarUser.star === true && this.props.star === true){
                 displayStar = 'checked'
             }
         }
@@ -254,7 +255,8 @@ const mapStateToProps = (state) => {
         user: state.chooseReducer,
         messages: state.listChatReducer,
         auth: state.firebase.auth,
-        star : state.starReducer
+        star : state.starReducer,
+        getStarUser : state.getStarReducer,
     }
 }
 export default withRouter(connect(mapStateToProps, mapDispathToProps)(Chat));
