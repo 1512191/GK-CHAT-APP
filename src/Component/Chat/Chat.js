@@ -69,18 +69,22 @@ class Chat extends Component {
             //star : star
         })
         if (id !== this.props.match.params.id) {
-            this.props.clearMessage();
             let idSender = this.state.uid;
+            let idReceiver = nextProps.match.params.id;
+            //this.props.getStar(idReceiver, idSender)
+            this.props.clearMessage();
+            
             //console.log(firebase.auth().currentUser)
             //console.log(idSender)
-            let idReceiver = nextProps.match.params.id;
+            
             //console.log(this.props.id)
             let key = idSender > idReceiver ? idReceiver + idSender : idSender + idReceiver;
-            this.props.getStar(idReceiver, idSender)
+            //this.props.getStar(idReceiver, idSender)
             //console.log(key)
             this.props.displayUser(idReceiver)
             //console.log(this.props.auth.uid)
             this.props.displayMessage(key);
+            this.props.getStar(idReceiver, idSender)
         }
     }
     handleAuth = (result) => {
@@ -107,9 +111,9 @@ class Chat extends Component {
                 // this.props.displayUser(idReceiver)
                 //console.log(this.props.auth.uid)
                 //console.log(this.props.getStar(idReceiver, idSender))
-                
-                this.props.clearMessage();
                 this.props.getStar(idReceiver, idSender)
+                this.props.clearMessage();
+                //this.props.getStar(idReceiver, idSender)
                 this.props.displayMessage(key);
             }
             else {
@@ -183,13 +187,14 @@ class Chat extends Component {
         let { user, messages, getStarUser } = this.props;
         //let star = this.props.getStar(this.props.id, this.props.auth.uid)
         let displayStar = 'unchecked'
-        console.log(this.props.star)
         if(getStarUser){
-            if(getStarUser.star === true && this.props.star === true){
+            if(getStarUser.star === true ){
                 displayStar = 'checked'
             }
         }
-        
+        if(this.props.star === true){
+            displayStar = 'checked'
+        }
         let header = user ? (<div className="chat-header clearfix">
             <img src={user.photoURL} width="50px" height="50px" alt="avatar" />
 

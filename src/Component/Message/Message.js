@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import moment from 'moment' 
+import moment from 'moment' ;
+import {timeConverter} from '../../Utils/util'
 class Message extends Component {
     render() {
         const {mesg, index} = this.props;
@@ -20,7 +21,7 @@ class Message extends Component {
         }else{
             displayMessage = <img src={mesg.text} width='80px' height='80px'alt="Hình không có"/>
         }
-    
+        // moment(Date(mesg.timeMessage)).calendar()
     
     //    let displayText = mesg.typeMes == 'image'? <img src={mesg.text} width='80px' height='80px'/> : <div>{mesg.text}</div>
         return (
@@ -28,7 +29,7 @@ class Message extends Component {
                 <li key={index} className="clearfix">
                                                 <div className="message-data align-right">
                                               
-                                                    <span className="message-data-time" >{moment(Date(mesg.timeMessage)).calendar()}</span> &nbsp; &nbsp;
+                                                    <span className="message-data-time" >{timeConverter(mesg.timeMessage)}</span> &nbsp; &nbsp;
                                                         <span className="message-data-name" >Me</span> <i className="fa fa-circle me"></i>
                     
                                                 </div>
