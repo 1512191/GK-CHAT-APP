@@ -18,8 +18,7 @@ class Header extends Component {
             <div className="header">
                 <div style={{color : 'rgb(117, 185, 89)', textAlign:"center", fontSize:'30px'}}>CHAT APP </div>
                 <div className="header-right">
-                    <a className="active" href="">Home</a>
-                    <a onClick={() => this.signOut()} href="">Sign out</a>
+                    <button className="btn btn-primary"onClick={() => this.signOut()} >Sign out</button>
                 </div>
             </div>
             

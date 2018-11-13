@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import moment from 'moment' ;
 import {timeConverter} from '../../Utils/util'
 class MessageRe extends Component {
     render() {
